@@ -53,6 +53,15 @@ To create a standalone `.app` bundle:
 
 See [ROADMAP.md](ROADMAP.md) for planned features. Pull requests are welcome!
 
+## 🤖 Built with Gemini
+
+This project was developed with the assistance of **Google Gemini**, an advanced AI model. Gemini helped with:
+*   **Architecture**: Designing the `SoundPack` and `ConfigManager` classes.
+*   **Core Logic**: Implementing the stereo panning and 3D audio algorithms.
+*   **Refactoring**: Fixing `rumps` menu construction and optimizing performance.
+*   **Security**: Auditing dependencies and securing configuration storage.
+*   **Documentation**: Generating release notes and project descriptions.
+
 ## 📄 License
 
 MIT License
