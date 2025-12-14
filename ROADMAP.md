@@ -2,6 +2,19 @@
 
 Plans for future versions of MechKeys for macOS.
 
+## 🛡️ Version 2.1 (Security & UX)
+
+### 1. Security Hardening
+- **Pin Dependencies:** `requirements.txt` now has strict version numbers to prevent supply chain attacks.
+- **Secure Config:** `~/.mechkeys.json` permissions are restricted to the owner (`600`) to protect user settings.
+
+### 2. Startup Permission Check
+- **Goal:** Inform users that "Input Monitoring" permission is required.
+- **Implementation:**
+    - On startup, check if the "Don't show again" flag is set.
+    - If not, show a popup: "MechKeys needs Input Monitoring permission."
+    - Options: "OK, I understand" and "Don't show again".
+
 ## 🚀 Version 3.0 (Planned)
 
 ### 1. The "Panic Button" (Global Hotkey)

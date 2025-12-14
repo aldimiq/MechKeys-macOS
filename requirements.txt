@@ -1,4 +1,4 @@
-rumps
-pynput
-pygame
-py2app
+rumps==0.4.0
+pynput==1.8.1
+pygame==2.6.1
+py2app==0.28.9

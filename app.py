@@ -7,7 +7,7 @@ import json
 import random
 from AppKit import NSApplication, NSApplicationActivationPolicyAccessory
 
-APP_VERSION = "2.0"
+APP_VERSION = "2.1"
 
 # --- Configuration & Persistence ---
 class ConfigManager:
@@ -17,7 +17,8 @@ class ConfigManager:
             "sound_pack": None,
             "volume": 0.5,
             "is_enabled": True,
-            "audio_mode": "Stereo"  # Options: Mono, Stereo, 3D
+            "audio_mode": "Stereo",  # Options: Mono, Stereo, 3D
+            "show_startup_check": True
         }
         self.data = self.load()
 
@@ -35,6 +36,8 @@ class ConfigManager:
         try:
             with open(self.config_path, 'w') as f:
                 json.dump(self.data, f, indent=4)
+            # Security: Restrict permissions to owner only (rw-------)
+            os.chmod(self.config_path, 0o600)
         except Exception as e:
             print(f"Error saving config: {e}")
 
@@ -193,6 +196,10 @@ class MechKeysApp(rumps.App):
         self.master_volume = self.config.get("volume")
         self.audio_mode = self.config.get("audio_mode")
         
+        # 2b. Startup Check
+        if self.config.get("show_startup_check"):
+            self.check_permissions_ui()
+        
         # 3. Init Audio
         try:
             # Frequency 44.1kHz, 16bit, 2 channels (Stereo), buffer 512
@@ -328,6 +335,32 @@ class MechKeysApp(rumps.App):
         self.is_enabled = not self.is_enabled
         sender.state = 1 if self.is_enabled else 0
         self.config.set("is_enabled", self.is_enabled)
+
+    def check_permissions_ui(self):
+        msg = ("To hear your typing, MechKeys needs 'Input Monitoring' permission.\n\n"
+               "Please go to System Settings > Privacy & Security > Input Monitoring "
+               "and add MechKeys if you haven't already.")
+        
+        # rumps.alert buttons order: [Default, Alternate, Other] -> [Right, Left, Center] usually
+        # We use a custom window or simple alert. Alert returns the index of the clicked button?
+        # No, rumps.alert(title, message, ok=None, cancel=None) is simple.
+        # But we need options. rumps.alert doesn't easily return custom button clicks in one line.
+        
+        # Let's use rumps.alert with specific button mapping if possible, or simple logic.
+        # rumps.alert only has 'ok' and 'cancel' text.
+        
+        # Workaround: Use rumps.window? No.
+        # Let's use `rumps.alert` with a clever message.
+        
+        response = rumps.alert(
+            title="Setup Required",
+            message=msg,
+            ok="OK",
+            cancel="Don't show again"
+        )
+        
+        if response == 0: # Cancel button (Don't show again) was clicked
+            self.config.set("show_startup_check", False)
 
     def quit_app(self, _):
         if self.listener:
