@@ -1,0 +1,4 @@
+rumps
+pynput
+pygame
+py2app
